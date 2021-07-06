@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
-import ProductSchema from "./schema.js";
+import mongoose from 'mongoose';
+import ProductSchema from './schema.js';
 
-export default mongoose.model("product", ProductSchema)
+export default mongoose.model('product', ProductSchema);
