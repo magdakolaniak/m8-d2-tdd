@@ -4,7 +4,7 @@ import ProductModel from './model.js';
 const productsRouter = express.Router();
 
 productsRouter.get('/', async (req, res) => {
-  //   const products = await ProductModel.find();
+  // const products = await ProductModel.find();
   const products = [];
   res.status(200).send({ products });
 });
@@ -32,6 +32,13 @@ productsRouter.post('/', async (req, res) => {
   await newProduct.save();
 
   res.status(201).send(newProduct);
+});
+
+productsRouter.delete('/:id', async (req, res) => {
+  const productID = req.params.id;
+  const product = await ProductModel.findByIdAndDelete(productID);
+
+  res.status(204).send({ message: 'SUCCESFULLY_DELETED' });
 });
 
 export default productsRouter;

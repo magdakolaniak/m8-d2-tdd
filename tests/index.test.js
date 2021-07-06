@@ -2,31 +2,34 @@ import supertest from 'supertest';
 import server from '../src/server.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { response } from 'express';
 
 dotenv.config();
 
 const request = supertest(server);
 
-beforeAll(() => {
-  console.log(process.env.ATLAS_URL);
+// beforeAll((done) => {
+//   console.log(process.env.ATLAS_URL);
 
-  mongoose
-    .connect(process.env.ATLAS_URL + '/test', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then(() => {
-      console.log('Successfully connected to Atlas!');
-    });
-});
+//   mongoose
+//     .connect(process.env.ATLAS_URL + '/test', {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     })
+//     .then(() => {
+//       console.log('Successfully connected to Atlas!');
+//       done();
+//     });
+// });
 
-afterAll(() => {
-  mongoose.connection.dropDatabase(() => {
-    mongoose.connection.close(() => {
-      console.log('Closed connection to Atlas!');
-    });
-  });
-});
+// afterAll((done) => {
+//   mongoose.connection.dropDatabase(() => {
+//     mongoose.connection.close(() => {
+//       console.log('Closed connection to Atlas!');
+//       done();
+//     });
+//   });
+// });
 
 describe('Testing test environment', () => {
   it('should check that true is true', () => {
@@ -46,7 +49,7 @@ describe('Testing endpoints', () => {
     const response = await request.get('/products');
 
     expect(response.status).toBe(200);
-    expect(response.body.products).toBeDefined();
+    expect(response.body).toBeDefined();
   });
 
   const validProduct = {
@@ -58,7 +61,7 @@ describe('Testing endpoints', () => {
     const response = await request.post('/products').send(validProduct);
 
     expect(response.status).toBe(201);
-    expect(response.body.name).toEqual(validProduct.name);
+    expect(response.body._id).toBeDefined();
 
     const _response = await request.get('/products/' + response.body._id);
 
@@ -75,8 +78,21 @@ describe('Testing endpoints', () => {
     expect(response.status).toBe(400);
     expect(response.body.message).toBe('INVALID_PRODUCT');
   });
+  const invalidId = 'non_existing_id';
 
-  it('should test again that true is true', () => {
-    expect(true).toBe(true);
+  it('should test that when retreiving the product with non-exisiting ID we are receiving an error', async () => {
+    const response = await request.get(`/products/${invalidId}`);
+
+    expect(response.status).toBe(404);
   });
+  // it('sould test that after deletaing we get a proper status code', async () => {
+  //   const response = await request.delete('/products/' + response.body._id);
+
+  //   expect(response.status).toBe(204);
+  //   expect(response.body.message).toBe('SUCCESFULLY_DELETED');
+  // });
+
+  // it('should test again that true is true', () => {
+  //   expect(true).toBe(true);
+  // });
 });
