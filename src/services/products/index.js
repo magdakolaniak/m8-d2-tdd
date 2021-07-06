@@ -35,10 +35,9 @@ productsRouter.post('/', async (req, res) => {
 });
 
 productsRouter.delete('/:id', async (req, res) => {
-  const productID = req.params.id;
-  const product = await ProductModel.findByIdAndDelete(productID);
+  const product = await ProductModel.findByIdAndDelete(req.params.id);
 
-  res.status(204).send({ message: 'SUCCESFULLY_DELETED' });
+  res.status(204).send();
 });
 
 export default productsRouter;

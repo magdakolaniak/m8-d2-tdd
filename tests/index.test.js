@@ -7,26 +7,26 @@ dotenv.config();
 
 const request = supertest(server);
 
-beforeAll(() => {
-  console.log(process.env.ATLAS_URL);
+// beforeAll(() => {
+//   console.log(process.env.ATLAS_URL);
 
-  mongoose
-    .connect(process.env.ATLAS_URL + '/test', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then(() => {
-      console.log('Successfully connected to Atlas!');
-    });
-});
+//   mongoose
+//     .connect(process.env.ATLAS_URL + '/test', {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     })
+//     .then(() => {
+//       console.log('Successfully connected to Atlas!');
+//     });
+// });
 
-afterAll(() => {
-  mongoose.connection.dropDatabase(() => {
-    mongoose.connection.close(() => {
-      console.log('Closed connection to Atlas!');
-    });
-  });
-});
+// afterAll(() => {
+//   mongoose.connection.dropDatabase(() => {
+//     mongoose.connection.close(() => {
+//       console.log('Closed connection to Atlas!');
+//     });
+//   });
+// });
 
 describe('Testing test environment', () => {
   it('should check that true is true', () => {
@@ -46,7 +46,7 @@ describe('Testing endpoints', () => {
     const response = await request.get('/products');
 
     expect(response.status).toBe(200);
-    expect(response.body).toBeDefined();
+    expect(response.body.products).toBeDefined();
   });
 
   const validProduct = {
@@ -83,11 +83,12 @@ describe('Testing endpoints', () => {
 
   //   expect(response.status).toBe(404);
   // });
-  // it('sould test that after deletaing we get a proper status code', async () => {
-  //   const response = await request.delete('/products/' + response.body._id);
+  // it('should test that after deletaing we get a proper status code', async () => {
+  //   const product = await request.post('/products').send(validProduct);
+  //   const response = await request.delete(`/products/${product._id}`);
 
   //   expect(response.status).toBe(204);
-  //   expect(response.body.message).toBe('SUCCESFULLY_DELETED');
+  //   // expect(response.body.message).toBe('SUCCESFULLY_DELETED');
   // });
 
   it('should test again that true is true', () => {
